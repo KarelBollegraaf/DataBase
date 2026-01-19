@@ -1,0 +1,56 @@
+version: "2.4"
+
+services:
+  db:
+    image: mysql:9.5.0
+    container_name: db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: BalerDB
+      MYSQL_USER: db_user
+      MYSQL_PASSWORD: db_password
+    volumes:
+      - BalerDB:/var/lib/mysql 
+    ports:
+      - 59972:3306
+    mem_limit: 500mb
+    mem_reservation: 450mb
+    networks:
+      - proxy-redirect
+    
+    
+  adminer:
+    image: adminer:standalone
+    restart: always
+    ports:
+      - 8080:8080
+    mem_limit: 150mb
+    mem_reservation: 130mb
+    networks:
+      - proxy-redirect
+    
+
+  data-ingest:
+    build: ./src
+    depends_on:
+      db:
+        condition: service_started  
+    environment:
+      DB_HOST: db
+      DB_USER: root
+    volumes:
+      - ./cfg-data/:/app/cfg-data/
+    restart: always
+    mem_limit: 300mb
+    mem_reservation: 250mb
+    networks:
+      - proxy-redirect
+ 
+volumes:
+  BalerDB:
+
+networks:
+  proxy-redirect:
+    external: true
+    name: proxy-redirect
