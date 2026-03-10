@@ -1,0 +1,8 @@
+{
+    "SQLALCHEMY_DATABASE_URI" : "mysql+mysqlconnector://root:secret@db:3306/BalerDB",
+    "MQTT_BROKER" : "mqtt",
+    "MQTT_PORT" : 1883,
+    "MQTT_USER" : "",
+    "MQTT_PASSWORD" : "",
+    "MQTT_MB_TOPIC" : "ModbusTest/1"
+}

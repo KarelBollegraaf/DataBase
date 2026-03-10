@@ -1,0 +1,58 @@
+CREATE TABLE IF NOT EXISTS mqtt_raw (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  ts DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  topic VARCHAR(255) NOT NULL,
+  payload JSON NULL,
+  payload_text LONGTEXT NULL,
+  INDEX idx_ts (ts),
+  INDEX idx_topic_ts (topic, ts)
+);
+
+CREATE TABLE IF NOT EXISTS bale_cycle (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  ts DATETIME(3) NOT NULL,
+
+  bale_number BIGINT UNSIGNED NULL,
+  recipe_number SMALLINT NULL,
+  material_name VARCHAR(64) NULL,
+  user_id SMALLINT NULL,
+  username VARCHAR(32) NULL,
+  customer_number SMALLINT NULL,
+  shift_number SMALLINT NULL,
+
+  kwh_used FLOAT NULL,
+  bale_length SMALLINT UNSIGNED NULL,
+  wires_vertical SMALLINT UNSIGNED NULL,
+  wires_horizontal SMALLINT UNSIGNED NULL,
+  knots_vertical SMALLINT UNSIGNED NULL,
+  knots_horizontal SMALLINT UNSIGNED NULL,
+  weight SMALLINT UNSIGNED NULL,
+  volume SMALLINT UNSIGNED NULL,
+  oil_temperature SMALLINT NULL,
+  oil_level SMALLINT NULL,
+
+  total_time SMALLINT UNSIGNED NULL,
+  auto_time SMALLINT UNSIGNED NULL,
+  standby_time SMALLINT UNSIGNED NULL,
+  empty_time SMALLINT UNSIGNED NULL,
+
+  valve_lp SMALLINT UNSIGNED NULL,
+  valve_hp SMALLINT UNSIGNED NULL,
+  valve_ko1 SMALLINT UNSIGNED NULL,
+  valve_ko2 SMALLINT UNSIGNED NULL,
+  valve_kd1 SMALLINT UNSIGNED NULL,
+  valve_kd2 SMALLINT UNSIGNED NULL,
+  valve_rp1 SMALLINT UNSIGNED NULL,
+  valve_rp2 SMALLINT UNSIGNED NULL,
+  valve_rr1 SMALLINT UNSIGNED NULL,
+  valve_rr2 SMALLINT UNSIGNED NULL,
+  valve_ch SMALLINT UNSIGNED NULL,
+  valve_mes SMALLINT UNSIGNED NULL,
+
+  raw_id BIGINT UNSIGNED NULL,
+
+  UNIQUE KEY uq_bale_ts (bale_number, ts),
+  INDEX idx_ts (ts),
+  INDEX idx_bale (bale_number),
+  CONSTRAINT fk_raw FOREIGN KEY (raw_id) REFERENCES mqtt_raw(id)
+);
