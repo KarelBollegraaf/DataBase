@@ -1,3 +1,5 @@
+version: "2.4"
+
 services:
   db:
     image: mysql:9.5.0
@@ -12,43 +14,31 @@ services:
       - BalerDB:/var/lib/mysql
     ports:
       - "59972:3306"
-    networks:
-      - proxy-redirect
+    mem_limit: 500m
+    mem_reservation: 450m
 
   adminer:
     image: adminer:standalone
+    container_name: adminer
     restart: always
     ports:
       - "8080:8080"
-    networks:
-      - proxy-redirect
-
-  mqtt:
-    image: eclipse-mosquitto:2
-    container_name: mqtt
-    restart: always
-    ports:
-      - "1883:1883"
-    networks:
-      - proxy-redirect
+    mem_limit: 150m
+    mem_reservation: 130m
 
   data-ingest:
-    build: ./src
-    depends_on:
-      db:
-        condition: service_started
-      mqtt:
-        condition: service_started
-    volumes:
-      - ./cfg-data/:/app/cfg-data/
+    image: database-ingest:0.0.1
+    container_name: data-ingest
     restart: always
-    networks:
-      - proxy-redirect
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: root
+    volumes:
+      - ./cfg-data:/app/cfg-data
+    mem_limit: 300m
+    mem_reservation: 250m
 
 volumes:
   BalerDB:
-
-networks:
-  proxy-redirect:
-    external: true
-    name: proxy-redirect
