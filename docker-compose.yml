@@ -16,6 +16,8 @@ services:
       - "59972:3306"
     mem_limit: 500m
     mem_reservation: 450m
+    networks:
+      - proxy-redirect
 
   adminer:
     image: adminer:standalone
@@ -25,6 +27,8 @@ services:
       - "8080:8080"
     mem_limit: 150m
     mem_reservation: 130m
+    networks:
+      - proxy-redirect
 
   data-ingest:
     image: database-ingest:0.0.1
@@ -32,13 +36,17 @@ services:
     restart: always
     depends_on:
       - db
-    environment:
-      DB_HOST: db
-      DB_USER: root
     volumes:
       - ./cfg-data:/app/cfg-data
     mem_limit: 300m
     mem_reservation: 250m
+    networks:
+      - proxy-redirect
 
 volumes:
   BalerDB:
+
+networks:
+  proxy-redirect:
+    external: true
+    name: proxy-redirect
